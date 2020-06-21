@@ -53,8 +53,13 @@ ol, ul {
   margin-left: 20px;
 }
 
+.game-board {
+  margin-right: 20px;
+}
+
 .square.black {
   background-color: #000000;
+  border: 1px solid #000000;
 }
 
 .square.white {

@@ -5,5 +5,10 @@
 
 export const config = {
     boardWidth: 8,
-    boardLength: 8
+    boardLength: 8,
+    stepsMin: 5,
+    stepsMax: 15,
+    resetButtonText: "Reset",
+    timerText: "Time Elpased: ",
+    winningText: "Congratulation!"
 };

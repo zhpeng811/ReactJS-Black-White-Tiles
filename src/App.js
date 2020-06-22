@@ -5,8 +5,9 @@
 
 import React from 'react';
 import './App.css';
+import Timer from 'react-compound-timer';
 import {config} from './Config';
-import {generateClicks} from './Generator';
+import {randomInt, generateClicks} from './Generator';
 
 function Square(props){
   const className = "square" + (props.color ? " white" : " black");
@@ -64,7 +65,8 @@ class Game extends React.Component {
     this._width = config.boardWidth;
     this.state = {
       targetBoard: [...Array(this._width)].map(() => Array(this._length).fill(true)),
-      gameboard: [...Array(this._width)].map(() => Array(this._length).fill(true))
+      gameBoard: [...Array(this._width)].map(() => Array(this._length).fill(true)),
+      exactMatch: false
     }
   }
 
@@ -78,14 +80,20 @@ class Game extends React.Component {
   }
 
   handleClick(row, column) {
-    var board = this.revertBlock(this.state.gameboard, row, column);
+    var board = this.revertBlock(this.state.gameBoard, row, column);
     this.setState({
-      gameboard: board
+      gameBoard: board
     });
+
+    if (checkExactMatch(this.state.targetBoard, this.state.gameBoard)) {
+      this.setState({
+        exactMatch: true
+      })
+    }
   }
 
   generateGame() {
-    var steps = 10;
+    var steps = randomInt(config.stepsMin, config.stepsMax + 1);
     var clicks = generateClicks(steps, this._width, this._length);
     var board = this.state.targetBoard;
     for (var i = 0; i < steps; i++) {
@@ -100,7 +108,26 @@ class Game extends React.Component {
     this.generateGame();
   }
 
+  onResetBoardHandler() {
+    this.setState({
+      gameBoard: [...Array(this._width)].map(() => Array(this._length).fill(true))
+    });
+  }
+
   render() {
+    let status = config.timerText;
+    let timer;
+    if (this.state.exactMatch) {
+      status = config.winningText;
+      timer = null;
+    } else {
+      timer = 
+      <Timer> 
+        <Timer.Minutes formatValue={value => `${value} m `} />
+        <Timer.Seconds formatValue={value => `${value} s `} />
+      </Timer>;
+    }
+
     return (
       <div className = "game">
         <div className = "game-board">
@@ -108,17 +135,36 @@ class Game extends React.Component {
             squares = {this.state.targetBoard}
             clickable = {false}
           />
+          <div className = "game-status">
+            <span> {status} </span>
+            <span> {timer} </span>
+          </div>
         </div>
         <div className = "game-board">
           <Board
-            squares = {this.state.gameboard}
+            squares = {this.state.gameBoard}
             onClick = {(row, column) => this.handleClick(row, column)}
             clickable = {true}
           />
+          <button 
+            className = "buttonReset"
+            onClick = {() => this.onResetBoardHandler()}
+          > 
+          {config.resetButtonText}
+          </button>
         </div>
       </div>
     );
   }
+}
+
+function checkExactMatch(targetBoard, gameBoard) {
+  for (var i = 0; i < targetBoard.length; i++) {
+    if (JSON.stringify(targetBoard[i]) !== JSON.stringify(gameBoard[i])) {
+      return false;
+    }
+  }
+  return true;
 }
 
 function App() {

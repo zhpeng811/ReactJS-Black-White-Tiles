@@ -32,17 +32,26 @@ ol, ul {
   width: 34px;
 }
 
-.buttonReset {
+.newGame-button {
   background-color: skyblue;
   border: 1px solid #999;
   color: black;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
   font-size: 16px;
-  margin-left: 185px;
+  margin-left: 55px;
   margin-top: 30px;
-  width: 80px;
+  width: 100px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.reset-button {
+  background-color: skyblue;
+  border: 1px solid #999;
+  color: black;
+  font-size: 16px;
+  margin-left: 10px;
+  margin-top: 30px;
+  width: 100px;
   height: 20px;
   cursor: pointer;
 }
@@ -78,6 +87,12 @@ ol, ul {
 
 .game-status {
   margin-top: 25px;
+  font-size: 20px;
+}
+
+.board-title {
+  margin-left: 75px;
+  margin-bottom: 10px;
   font-size: 20px;
 }
 

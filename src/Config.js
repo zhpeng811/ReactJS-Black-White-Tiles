@@ -9,6 +9,9 @@ export const config = {
     stepsMin: 5,
     stepsMax: 15,
     resetButtonText: "Reset",
+    newGameText: "New Game",
     timerText: "Time Elpased: ",
-    winningText: "Congratulation!"
+    winningText: "Congratulation! You Used:",
+    targetBoardTitle: "Target Board",
+    playBoardTitle: "Play Board"
 };

@@ -63,10 +63,12 @@ class Game extends React.Component {
     super(props);
     this._length = config.boardLength;
     this._width = config.boardWidth;
+    this._timer = null;
     this.state = {
       targetBoard: [...Array(this._width)].map(() => Array(this._length).fill(true)),
       gameBoard: [...Array(this._width)].map(() => Array(this._length).fill(true)),
-      exactMatch: false
+      exactMatch: false,
+      resetTime: false
     }
   }
 
@@ -80,6 +82,9 @@ class Game extends React.Component {
   }
 
   handleClick(row, column) {
+    if (this.state.exactMatch) {
+      return;
+    }
     var board = this.revertBlock(this.state.gameBoard, row, column);
     this.setState({
       gameBoard: board
@@ -88,14 +93,15 @@ class Game extends React.Component {
     if (checkExactMatch(this.state.targetBoard, this.state.gameBoard)) {
       this.setState({
         exactMatch: true
-      })
+      });
+      this.stopTime();
     }
   }
 
   generateGame() {
     var steps = randomInt(config.stepsMin, config.stepsMax + 1);
     var clicks = generateClicks(steps, this._width, this._length);
-    var board = this.state.targetBoard;
+    var board = [...Array(this._width)].map(() => Array(this._length).fill(true));
     for (var i = 0; i < steps; i++) {
       board = this.revertBlock(board, clicks[i][0], clicks[i][1]);
     }
@@ -106,6 +112,29 @@ class Game extends React.Component {
 
   componentDidMount() {
     this.generateGame();
+    this.createTimer();
+  }
+
+  resetTime() {}
+  stopTime() {}
+  startTime() {}
+
+  createTimer() {
+    this._timer = 
+      <Timer> 
+        {({reset, stop, start}) => {
+          this.resetTime = reset;
+          this.stopTime = stop;
+          this.startTime = start;
+
+          return (
+            <React.Fragment>
+                  <Timer.Minutes formatValue={value => `${value} m `} />
+                  <Timer.Seconds formatValue={value => `${value} s `} />
+            </React.Fragment>
+          );
+        }}
+      </Timer>
   }
 
   onResetBoardHandler() {
@@ -114,45 +143,72 @@ class Game extends React.Component {
     });
   }
 
+  onNewGameHandler() {
+    this.generateGame();
+    this.onResetBoardHandler();
+    this.setState({
+      exactMatch: false
+    })
+    this.resetTime();
+    this.startTime();
+  }
+
   render() {
     let status = config.timerText;
-    let timer;
     if (this.state.exactMatch) {
       status = config.winningText;
-      timer = null;
-    } else {
-      timer = 
-      <Timer> 
-        <Timer.Minutes formatValue={value => `${value} m `} />
-        <Timer.Seconds formatValue={value => `${value} s `} />
-      </Timer>;
     }
+  
 
     return (
       <div className = "game">
+
         <div className = "game-board">
+
+          <div className = "board-title">
+            <span> {config.targetBoardTitle} </span> 
+          </div>
+
           <Board 
             squares = {this.state.targetBoard}
             clickable = {false}
           />
+
           <div className = "game-status">
             <span> {status} </span>
-            <span> {timer} </span>
+            <div> {this._timer} </div>
           </div>
+
         </div>
+
         <div className = "game-board">
+
+          <div className = "board-title">
+            <span> {config.playBoardTitle} </span>
+          </div>
+
           <Board
             squares = {this.state.gameBoard}
             onClick = {(row, column) => this.handleClick(row, column)}
             clickable = {true}
           />
+          
           <button 
-            className = "buttonReset"
+            className = "newGame-button"
+            onClick = {() => this.onNewGameHandler()}
+          >
+            {config.newGameText}
+          </button>
+
+          <button 
+            className = "reset-button"
             onClick = {() => this.onResetBoardHandler()}
           > 
-          {config.resetButtonText}
+            {config.resetButtonText}
           </button>
+
         </div>
+
       </div>
     );
   }

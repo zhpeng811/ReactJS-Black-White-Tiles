@@ -8,16 +8,36 @@ import './App.css';
 import Timer from 'react-compound-timer';
 import {config} from './Config';
 import {randomInt, generateClicks} from './Generator';
+import StartMenu from './StartMenu';
 
-function Square(props){
-  const className = "square" + (props.color ? " white" : " black");
+/**
+ * A clickable sqaure
+ * @param {JSON} props - See below for a list of props:
+ * @param {Array[Number]} key - Only used to disable the warning in console
+ * @param {Boolean} color - true represent a white tile, false represent a black tile
+ * @param {Function} onClick - the function that should be called when the square is clicked
+ * @param {Boolean} hindView - whether or not this square's color should be hidden 
+ *                             (showing gray instead of black or white)
+ */
+function Square(props) {
+  var className = "square";
+  if (props.hindView) {
+    className += " gray";
+  } 
+  else if (props.color) {
+    className += " white";
+  } 
+  else {
+    className += " black";
+  }
+
   return (
     <button 
       className = {className}
       onClick = {props.onClick}
     >
     </button>
-  )
+  );
 }
 
 class Board extends React.Component {
@@ -31,6 +51,7 @@ class Board extends React.Component {
           if (this.props.clickable) return this.props.onClick(row, column)
           else return null
         }}
+        hindView = {this.props.hindView}
       />
     )
   }
@@ -67,8 +88,14 @@ class Game extends React.Component {
     this.state = {
       targetBoard: [...Array(this._width)].map(() => Array(this._length).fill(true)),
       gameBoard: [...Array(this._width)].map(() => Array(this._length).fill(true)),
+      gameInProgress: true,
       exactMatch: false,
-      resetTime: false
+      resetTime: false,
+      hindTargetBoard: false,
+    }
+
+    if (this.props.gameMode === config.gamemodes.blind) {
+      this.state.gameInProgress = false;
     }
   }
 
@@ -82,7 +109,10 @@ class Game extends React.Component {
   }
 
   handleClick(row, column) {
-    if (this.state.exactMatch) {
+    if (
+      !this.state.gameInProgress || 
+      (this.props.gameMode === config.gamemodes.blind && !this.state.hindTargetBoard)
+    ) {
       return;
     }
     var board = this.revertBlock(this.state.gameBoard, row, column);
@@ -92,14 +122,17 @@ class Game extends React.Component {
 
     if (checkExactMatch(this.state.targetBoard, this.state.gameBoard)) {
       this.setState({
-        exactMatch: true
+        exactMatch: true,
+        gameInProgress: false,
+        hindTargetBoard: false
       });
       this.stopTime();
     }
   }
 
   generateGame() {
-    var steps = randomInt(config.stepsMin, config.stepsMax + 1);
+    var difficultySteps = config.steps[this.props.difficulty];
+    var steps = randomInt(difficultySteps[0], difficultySteps[1] + 1);
     var clicks = generateClicks(steps, this._width, this._length);
     var board = [...Array(this._width)].map(() => Array(this._length).fill(true));
     for (var i = 0; i < steps; i++) {
@@ -147,10 +180,26 @@ class Game extends React.Component {
     this.generateGame();
     this.onResetBoardHandler();
     this.setState({
-      exactMatch: false
+      exactMatch: false,
+      gameInProgress: ((this.props.gameMode !== config.gamemodes.blind) ? true : false),
+      hindTargetBoard: false
     })
     this.resetTime();
     this.startTime();
+  }
+
+  onBlindModeButtonClickHandler(currentButtonText) {
+    if (currentButtonText === config.showBoardText) {
+      this.setState({
+        hindTargetBoard: false
+      });
+    }
+    else {
+      this.setState({
+        gameInProgress: true,
+        hindTargetBoard: true
+      });
+    } 
   }
 
   render() {
@@ -158,7 +207,17 @@ class Game extends React.Component {
     if (this.state.exactMatch) {
       status = config.winningText;
     }
-  
+    
+    let blindModeButtonText;
+    if (!this.state.gameInProgress) {
+      blindModeButtonText = config.startGameText;
+    }
+    else if (this.state.hindTargetBoard) {
+      blindModeButtonText = config.showBoardText;
+    }
+    else {
+      blindModeButtonText = config.hideBoardText;
+    }
 
     return (
       <div className = "game">
@@ -172,13 +231,22 @@ class Game extends React.Component {
           <Board 
             squares = {this.state.targetBoard}
             clickable = {false}
+            hindView = {this.state.hindTargetBoard}
           />
+
+          {this.props.gameMode === config.gamemodes.blind && 
+            <button 
+              className = "inGame-button"
+              onClick = {() => this.onBlindModeButtonClickHandler(blindModeButtonText)}
+            >
+              {blindModeButtonText}
+            </button>
+          }
 
           <div className = "game-status">
             <span> {status} </span>
             <div> {this._timer} </div>
           </div>
-
         </div>
 
         <div className = "game-board">
@@ -194,17 +262,24 @@ class Game extends React.Component {
           />
           
           <button 
-            className = "newGame-button"
+            className = "inGame-button"
             onClick = {() => this.onNewGameHandler()}
           >
             {config.newGameText}
           </button>
 
           <button 
-            className = "reset-button"
+            className = "inGame-button"
             onClick = {() => this.onResetBoardHandler()}
           > 
             {config.resetButtonText}
+          </button>
+
+          <button 
+            className = "inGame-button"
+            onClick = {() => this.props.backToMainMenu()}
+          > 
+            {config.mainMenuText}
           </button>
 
         </div>
@@ -223,10 +298,49 @@ function checkExactMatch(targetBoard, gameBoard) {
   return true;
 }
 
-function App() {
-  return (
-    <Game />
-  );
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      gameModeSelected: 0, // 0 - None Selected, 1 - Classic, 2 - Blind
+      difficulty: 0, // 0 - None Selected, 1 - Easy, 2 - Medium, 3 - Hard
+      startGame: false
+    }  
+  }
+
+  onStartGameButtonClickHandler(gameMode, difficulty) {
+    this.setState({
+      gameModeSelected: gameMode,
+      difficulty: difficulty,
+      startGame: true
+    });
+  }
+
+  onBackToMainMenuHandler() {
+    this.setState({
+      startGame: false
+    });
+  }
+
+  render() {
+    if (this.state.startGame) {
+      return (
+        <Game 
+          gameMode = {this.state.gameModeSelected}
+          difficulty = {this.state.difficulty}
+          backToMainMenu = {() => this.onBackToMainMenuHandler()}
+        />
+      );
+    } else {
+      return (
+        <StartMenu
+          startGameHandler = {
+            (gameMode, difficulty) => this.onStartGameButtonClickHandler(gameMode, difficulty)
+          }
+        />
+      );
+    }
+  }
 }
 
 export default App;

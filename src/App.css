@@ -1,12 +1,3 @@
-body {
-  font: 14px "Century Gothic", Futura, sans-serif;
-  margin: 20px;
-}
-
-ol, ul {
-  padding-left: 30px;
-}
-
 .board-row:after {
   clear: both;
   content: "";
@@ -23,38 +14,29 @@ ol, ul {
   float: left;
   font-size: 24px;
   font-weight: bold;
-  line-height: 34px;
-  height: 34px;
+  line-height: 50px;
+  height: 50px;
   margin-right: -1px;
   margin-top: -1px;
   padding: 0;
   text-align: center;
-  width: 34px;
+  width: 50px;
 }
 
-.newGame-button {
+.inGame-button {
   background-color: skyblue;
   border: 1px solid #999;
   color: black;
   font-size: 16px;
-  margin-left: 55px;
-  margin-top: 30px;
-  width: 100px;
-  height: 20px;
-  cursor: pointer;
-}
-
-.reset-button {
-  background-color: skyblue;
-  border: 1px solid #999;
-  color: black;
-  font-size: 16px;
+  display: block;
+  float: right;
   margin-left: 10px;
   margin-top: 30px;
   width: 100px;
   height: 20px;
   cursor: pointer;
 }
+
 
 .square:focus {
   outline: none;
@@ -91,8 +73,8 @@ ol, ul {
 }
 
 .board-title {
-  margin-left: 75px;
-  margin-bottom: 10px;
+  text-align: center;
+  margin-bottom: 20px;
   font-size: 20px;
 }
 
@@ -103,4 +85,9 @@ ol, ul {
 
 .square.white {
   background-color: #ffffff;
+}
+
+.square.gray {
+  background-color: gray;
+  border: 1px solid #000000;
 }

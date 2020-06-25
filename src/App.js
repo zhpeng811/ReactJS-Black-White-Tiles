@@ -18,18 +18,13 @@ import StartMenu from './StartMenu';
  * @param {Function} onClick - the function that should be called when the square is clicked
  * @param {Boolean} hindView - whether or not this square's color should be hidden 
  *                             (showing gray instead of black or white)
+ * @return <button> - a html button element
  */
 function Square(props) {
   var className = "square";
-  if (props.hindView) {
-    className += " gray";
-  } 
-  else if (props.color) {
-    className += " white";
-  } 
-  else {
-    className += " black";
-  }
+  if (props.hindView) className += " gray";
+  else if (props.color) className += " white";
+  else className += " black";
 
   return (
     <button 
@@ -42,6 +37,12 @@ function Square(props) {
 
 class Board extends React.Component {
 
+  /**
+   * render a square at the specified row and column
+   * @param {Number} row - row number
+   * @param {Number} column - column number
+   * @return <Square> - a Square element with the supplied props
+   */
   renderSquare(row, column){
     return (
       <Square
@@ -56,6 +57,9 @@ class Board extends React.Component {
     )
   }
 
+  /**
+   * Create the m(width) by n(length) board by creating n squares on each of the m rows 
+   */
   createBoard() {
     let row = [];
     for (let i = 0; i < config.boardWidth; i++) {
@@ -65,10 +69,12 @@ class Board extends React.Component {
       }
       row.push(<div className = "board-row" key = {i}> {column} </div>);
     }
-
     return row;
   }
 
+  /**
+   * renders the board by calling the createBoard() function
+   */
   render() {
     return (
       <div>
@@ -80,6 +86,13 @@ class Board extends React.Component {
 }
 
 class Game extends React.Component {
+  /**
+   * construct the states and private variables
+   * @param {JSON} props - See below for a list of props
+   * @param {Number} gameMode - the gamemode the user chose, see Config.js for mapping
+   * @param {Number} difficulty - the difficulty the user chose, see Config.js for mapping
+   * @param {Function} backToMainMenu - function that is called when user clicks the "Main Menu" button
+   */
   constructor(props) {
     super(props);
     this._length = config.boardLength;
@@ -91,9 +104,10 @@ class Game extends React.Component {
       gameInProgress: true,
       exactMatch: false,
       resetTime: false,
-      hindTargetBoard: false,
+      hindTargetBoard: false
     }
 
+    // in blind mode, user have to click "Start Game" to start the game and timer
     if (this.props.gameMode === config.gamemodes.blind) {
       this.state.gameInProgress = false;
     }
@@ -219,6 +233,18 @@ class Game extends React.Component {
       blindModeButtonText = config.hideBoardText;
     }
 
+    let gameModeInfo = (this.props.gameMode === config.gamemodes.classic) ? config.classicModeText : config.blindModeText;
+    let difficultyInfo;
+    if (this.props.difficulty === config.difficulty.easy) {
+      difficultyInfo = "(" + config.easyText + ")";
+    }
+    else if (this.props.difficulty === config.difficulty.medium) {
+      difficultyInfo = "(" + config.mediumText + ")";
+    }
+    else if (this.props.difficulty === config.difficulty.hard) {
+      difficultyInfo = "(" + config.hardText + ")";
+    }
+
     return (
       <div className = "game">
 
@@ -248,6 +274,13 @@ class Game extends React.Component {
             <div> {this._timer} </div>
           </div>
         </div>
+
+        <div className = "game-info">
+          {gameModeInfo}
+          <div> 
+            {difficultyInfo}
+          </div>  
+        </div> 
 
         <div className = "game-board">
 

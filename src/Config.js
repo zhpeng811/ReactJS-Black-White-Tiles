@@ -15,10 +15,15 @@ export const config = {
         classic: 1,
         blind: 2
     },
+    difficulty: {
+        easy: 1,
+        medium: 2,
+        hard: 3
+    },
     resetButtonText: "Reset",
     newGameText: "New Game",
     timerText: "Time Elpased: ",
-    winningText: "Congratulation! You Used:",
+    winningText: "Congratulation! Your Time is:",
     targetBoardTitle: "Target Board",
     playBoardTitle: "Play Board",
     startMenuTitle: "Black White Tiles",
@@ -28,7 +33,7 @@ export const config = {
     easyText: "Easy",
     mediumText: "Medium",
     hardText: "Hard",
-    classicModeText: "Classic Mode: ",
-    blindModeText: "Blind Mode: ",
-    mainMenuText: "Main Menu",
+    classicModeText: "Classic Mode",
+    blindModeText: "Blind Mode",
+    mainMenuText: "Main Menu"
 };

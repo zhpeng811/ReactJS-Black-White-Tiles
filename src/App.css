@@ -1,4 +1,9 @@
-.board-row:after {
+/** 
+ * Copyright: Ze Hui Peng
+ * github URL: https://github.com/zhpeng811/ReactJS-Black-White-Tiles
+*/
+
+.board-row{
   clear: both;
   content: "";
   display: table;
@@ -54,17 +59,17 @@
   display: flex;
   flex-direction: row;
   position: fixed;
-  /* top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); */
 }
 
 .game-info {
-  margin-left: 20px;
+  font: 400 30px/0.8 'Cookie', Helvetica, sans-serif;
+  color: blue;
+  text-shadow: 4px 4px 3px rgba(0,0,0,0.1);
+  text-align: center;
 }
 
 .game-board {
-  margin-right: 20px;
+  margin-right: 5px;
 }
 
 .game-status {
@@ -74,6 +79,7 @@
 
 .board-title {
   text-align: center;
+  margin-top: 20px;
   margin-bottom: 20px;
   font-size: 20px;
 }

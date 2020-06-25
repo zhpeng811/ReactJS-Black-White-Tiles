@@ -20,33 +20,46 @@ class StartMenu extends React.Component {
                         {config.startMenuTitle}
                     </div>
 
-                    <span> {config.classicModeText} </span>
+                    <span> {config.classicModeText}: </span>
                     <button
                         className = "startMenu-button"
-                        onClick = {() => this.props.startGameHandler(1, 1)}
+                        onClick = {() => this.props.startGameHandler(
+                            config.gamemodes.classic, 
+                            config.difficulty.easy
+                        )}
                     > 
                         {config.easyText}
                     </button>
                 
                     <button
                         className = "startMenu-button"
-                        onClick = {() => this.props.startGameHandler(1, 2)}
+                        onClick = {() => this.props.startGameHandler(
+                            config.gamemodes.classic,
+                            config.difficulty.medium
+                        )}
                     > 
                         {config.mediumText}
                     </button>
 
                     <button
                         className = "startMenu-button"
-                        onClick = {() => this.props.startGameHandler(1, 3)}
+                        onClick = {() => this.props.startGameHandler(
+                            config.gamemodes.classic, 
+                            config.difficulty.hard
+                        )}
                     > 
                         {config.hardText}
                     </button>
 
-                    <div></div>
-                    <span> {config.blindModeText} </span>
+                    <div> {/* empty div to move contents to a new line*/} </div> 
+                    <span> {config.blindModeText}: </span>
+                    
                     <button
                         className = "startMenu-button"
-                        onClick = {() => this.props.startGameHandler(2, 1)}
+                        onClick = {() => this.props.startGameHandler(
+                            config.gamemodes.blind, 
+                            config.difficulty.easy
+                        )}
                     > 
                         {config.easyText}
                     </button>

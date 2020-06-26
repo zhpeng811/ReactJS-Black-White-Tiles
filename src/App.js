@@ -107,7 +107,7 @@ class Game extends React.Component {
       hindTargetBoard: false
     }
 
-    // in blind mode, user have to click "Start Game" to start the game and timer
+    // in blind mode, user have to click "Start Game" to start the game
     if (this.props.gameMode === config.gamemodes.blind) {
       this.state.gameInProgress = false;
     }

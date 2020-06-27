@@ -10,6 +10,9 @@ import background from './background.jpg';
 
 class StartMenu extends React.Component {
 
+    /**
+     * render the startMenu which includes background image, title, and buttons
+     */
     render() {
         return (
             <React.Fragment>

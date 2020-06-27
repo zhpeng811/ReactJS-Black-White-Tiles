@@ -46,7 +46,7 @@ class Board extends React.Component {
   renderSquare(row, column){
     return (
       <Square
-        key = {[row, column]}
+        key = {[row, column]} // not used, added to prevent warning message
         color = {this.props.squares[row][column]}
         onClick = {() => {
           if (this.props.clickable) return this.props.onClick(row, column)
@@ -98,6 +98,8 @@ class Game extends React.Component {
     this._length = config.boardLength;
     this._width = config.boardWidth;
     this._timer = null;
+    this._clicks = 0;
+    this._showHideOperations = 0;
     this.state = {
       targetBoard: [...Array(this._width)].map(() => Array(this._length).fill(true)),
       gameBoard: [...Array(this._width)].map(() => Array(this._length).fill(true)),
@@ -105,7 +107,7 @@ class Game extends React.Component {
       exactMatch: false,
       resetTime: false,
       hindTargetBoard: false
-    }
+    };
 
     // in blind mode, user have to click "Start Game" to start the game
     if (this.props.gameMode === config.gamemodes.blind) {
@@ -113,8 +115,15 @@ class Game extends React.Component {
     }
   }
 
+  /**
+   * revert the color of the click tile AND all adjacent tiles around it
+   * @param {Array[Array[Boolean]]} board - the game board that user can click on
+   * @param {Number} row - the row of the tile that was clicked 
+   * @param {Number} column - the column of the tile that was clicked
+   */
   revertBlock(board, row, column) {
     board[row][column] = !board[row][column];
+    // make sure index lies within the array boundary
     if (row - 1 >= 0) board[row - 1][column] = !board[row - 1][column];
     if (row + 1 < this._width) board[row + 1][column] = !board[row + 1][column];
     if (column - 1 >= 0) board[row][column - 1] = !board[row][column - 1];
@@ -122,6 +131,11 @@ class Game extends React.Component {
     return board;
   }
 
+  /**
+   * handle user click on the gameboard tile
+   * @param {Number} row - the row of the tile that was clicked 
+   * @param {Number} column - the column of the tile that was clicked 
+   */
   handleClick(row, column) {
     if (
       !this.state.gameInProgress || 
@@ -129,7 +143,8 @@ class Game extends React.Component {
     ) {
       return;
     }
-    var board = this.revertBlock(this.state.gameBoard, row, column);
+
+    let board = this.revertBlock(this.state.gameBoard, row, column);
     this.setState({
       gameBoard: board
     });
@@ -142,8 +157,14 @@ class Game extends React.Component {
       });
       this.stopTime();
     }
+
+    this._clicks++;
   }
 
+  /**
+   * generate the games by generating random clicks on the target board
+   * and form a target pattern
+   */
   generateGame() {
     var difficultySteps = config.steps[this.props.difficulty];
     var steps = randomInt(difficultySteps[0], difficultySteps[1] + 1);
@@ -157,19 +178,31 @@ class Game extends React.Component {
     });
   }
 
+  /**
+   * react function that will be called after compoent is mounted
+   * this will generate the target pattern and start the timer
+   */
   componentDidMount() {
     this.generateGame();
     this.createTimer();
   }
 
+  /**
+   * three functions declared to replace the reset, stop, and start function
+   * to outside of the <Timer> component
+   */
   resetTime() {}
   stopTime() {}
   startTime() {}
 
+  /**
+   * create the timer by creating the <Timer> component
+   */
   createTimer() {
     this._timer = 
       <Timer> 
         {({reset, stop, start}) => {
+          // sneaky way to move and use the function outside of the <Timer> component
           this.resetTime = reset;
           this.stopTime = stop;
           this.startTime = start;
@@ -184,12 +217,19 @@ class Game extends React.Component {
       </Timer>
   }
 
+  /**
+   * reset the board by setting all tiles to white
+   */
   onResetBoardHandler() {
     this.setState({
       gameBoard: [...Array(this._width)].map(() => Array(this._length).fill(true))
     });
   }
 
+  /**
+   * when new game is clicked, regenerate a target pattern and reset all varibles back
+   * to its default state
+   */
   onNewGameHandler() {
     this.generateGame();
     this.onResetBoardHandler();
@@ -198,15 +238,26 @@ class Game extends React.Component {
       gameInProgress: ((this.props.gameMode !== config.gamemodes.blind) ? true : false),
       hindTargetBoard: false
     })
+    this._clicks = 0;
+    this._showHideOperations = 0;
     this.resetTime();
     this.startTime();
   }
 
+  /**
+   * This button have three states
+   * 1. Start Game - shows when the game is first generated, click on it will hide the 
+   *                 target button and start the game
+   * 2. Show - shows the target pattern and disable game board click
+   * 3. Hide - hides the target pattern and enable game board click
+   * @param {String} currentButtonText - contains text for one of the state above
+   */
   onBlindModeButtonClickHandler(currentButtonText) {
     if (currentButtonText === config.showBoardText) {
       this.setState({
         hindTargetBoard: false
       });
+      this._showHideOperations++;
     }
     else {
       this.setState({
@@ -216,12 +267,17 @@ class Game extends React.Component {
     } 
   }
 
+  /** 
+   * Render the 2 board and all buttons
+   */
   render() {
-    let status = config.timerText;
+    // game status
+    let status = config.inprogressText;
     if (this.state.exactMatch) {
       status = config.winningText;
     }
     
+    // blind mode button text, only appears in blind mode
     let blindModeButtonText;
     if (!this.state.gameInProgress) {
       blindModeButtonText = config.startGameText;
@@ -233,6 +289,7 @@ class Game extends React.Component {
       blindModeButtonText = config.hideBoardText;
     }
 
+    // gamemode and difficulty information
     let gameModeInfo = (this.props.gameMode === config.gamemodes.classic) ? config.classicModeText : config.blindModeText;
     let difficultyInfo;
     if (this.props.difficulty === config.difficulty.easy) {
@@ -271,7 +328,11 @@ class Game extends React.Component {
 
           <div className = "game-status">
             <span> {status} </span>
-            <div> {this._timer} </div>
+            <div> {config.timerText} {this._timer} </div>
+            <div> {config.clickText} {this._clicks} </div>
+            {this.props.gameMode === config.gamemodes.blind &&
+              <div> {config.showhideText} {this._showHideOperations} </div>
+            }
           </div>
         </div>
 
@@ -322,8 +383,14 @@ class Game extends React.Component {
   }
 }
 
+/**
+ * check if the target board is exactly the same as the game board
+ * @param {Array[Array[Boolean]]} targetBoard - the target board
+ * @param {Array[Array[Boolean]]}  gameBoard  - the game board
+ */
 function checkExactMatch(targetBoard, gameBoard) {
   for (var i = 0; i < targetBoard.length; i++) {
+    // JSON.stringify converts array into a string for comparison
     if (JSON.stringify(targetBoard[i]) !== JSON.stringify(gameBoard[i])) {
       return false;
     }
@@ -332,6 +399,10 @@ function checkExactMatch(targetBoard, gameBoard) {
 }
 
 class App extends React.Component {
+  /**
+   * construct the states
+   * @param {JSON} props - no props in this class
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -341,6 +412,11 @@ class App extends React.Component {
     }  
   }
 
+  /**
+   * handler when user choose a gamemode and difficulty to start the game
+   * @param {Number} gameMode - gamemode that user chose, see Config.js for enum
+   * @param {Number} difficulty - difficulty that user chose, see Config.js for enum
+   */
   onStartGameButtonClickHandler(gameMode, difficulty) {
     this.setState({
       gameModeSelected: gameMode,
@@ -349,12 +425,18 @@ class App extends React.Component {
     });
   }
 
+  /**
+   * Handler for clicking the "Main Menu" button
+   */
   onBackToMainMenuHandler() {
     this.setState({
       startGame: false
     });
   }
 
+  /**
+   * Render either the <Game> component or the <StartMenu> component
+   */
   render() {
     if (this.state.startGame) {
       return (

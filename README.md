@@ -13,7 +13,7 @@
 
 ***5.*** run the following to start the docker container:
 #### `docker run -p 3000:3000 --name black-white-tiles black-white-tiles` <br />
-The `-p 3000:3000` does a port forwarding from container to your host, which you can goto [http://localhost:3000] in your browser to play the game<br />
+The `-p 3000:3000` does a port forwarding from container to your host, which you can goto http://localhost:3000 in your browser to play the game<br />
 
 ### To Remove the docker container, image, and build cache
 Remove container:
@@ -42,7 +42,7 @@ You can install at https://nodejs.org/en/download/ if you don't have NodeJS inst
 
 ***5.*** run the following to play the game:
 #### `npm start`
-A browser should automatically open with the game launch, or you can open it maually by typing [http://localhost:3000] in your browser <br />
+A browser should automatically open with the game launch, or you can open it maually by typing http://localhost:3000 in your browser <br />
 
 # Gamerule
 You are given two boards, one target board and one game board, the game board will be initally all white blocks, you can click the blocks on the game board but NOT on the target board

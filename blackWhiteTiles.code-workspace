@@ -2,9 +2,6 @@
 	"folders": [
 		{
 			"path": "."
-		},
-		{
-			"path": "../react_tic_tac_toe"
 		}
 	],
 	"settings": {}

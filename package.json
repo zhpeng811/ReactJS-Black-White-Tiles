@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "react": "^16.12.0",
+    "react": "^17.0.2",
     "react-compound-timer": "^1.2.0",
-    "react-dom": "^16.12.0",
+    "react-dom": "^17.0.2",
     "react-scripts": "^4.0.3"
   },
   "scripts": {
@@ -16,5 +16,17 @@
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

@@ -3,17 +3,22 @@
 ### To Run with Docker:
 ***1.*** Install [Docker](https://www.docker.com/get-started)
 
-***2.*** Make sure docker is running
+***2.*** Make sure Docker Desktop is running, you can check with:
+#### `docker info`
 
-***3.*** change to the project directory:
-#### `cd ReactJS-Black-White-Tiles` <br />
+***3.*** clone the repository, you can either directly download the .zip version on gitlab or by running:
+#### `git clone https://github.com/zhpeng811/ReactJS-Black-White-Tiles.git`
+**Note: you must have git installed to use git clone**
 
-***4.*** run the following to build the docker image:
-#### `docker build -t black-white-tiles .` <br />
+***4.*** change to the project directory:
+#### `cd ReactJS-Black-White-Tiles`
 
-***5.*** run the following to start the docker container:
-#### `docker run -p 3000:3000 --name black-white-tiles black-white-tiles` <br />
-The `-p 3000:3000` does a port forwarding from container to your host, which you can goto http://localhost:3000 in your browser to play the game<br />
+***5.*** run the following to build the docker image:
+#### `docker build -t black-white-tiles .`
+
+***6.*** run the following to start the docker container:
+#### `docker run -p 3000:3000 --name black-white-tiles black-white-tiles`
+The `-p 3000:3000` does a port forwarding from the container to your host, which now you can goto http://localhost:3000 in your browser to play the game<br />
 
 ### To Remove the docker container, image, and build cache
 Remove container:
@@ -28,21 +33,21 @@ Remove build cache:
 ## Running the application on your local machine
 ***1.*** Install NodeJS if you don't have it, recommended version is v12.18.1, you can check your NodeJS version by running:
 #### `node -v`
-You can install at https://nodejs.org/en/download/ if you don't have NodeJS installed already. <br />
+You can install at https://nodejs.org/en/download/ if you don't have NodeJS installed already.
 
 ***2.*** clone the repository, you can either directly download the .zip version on gitlab or by running:
 #### `git clone https://github.com/zhpeng811/ReactJS-Black-White-Tiles.git`
-**Note: you must have git installed to use git clone** <br />
+**Note: you must have git installed to use git clone**
 
 ***3.*** change to the project directory:
-#### `cd ReactJS-Black-White-Tiles` <br />
+#### `cd ReactJS-Black-White-Tiles`
 
 ***4.*** run the following to install the required node modules:
-#### `npm install` <br />
+#### `npm install`
 
 ***5.*** run the following to play the game:
 #### `npm start`
-A browser should automatically open with the game launch, or you can open it maually by typing http://localhost:3000 in your browser <br />
+A browser should automatically open with the game launch, or you can open it maually by typing http://localhost:3000 in your browser
 
 # Gamerule
 You are given two boards, one target board and one game board, the game board will be initally all white blocks, you can click the blocks on the game board but NOT on the target board

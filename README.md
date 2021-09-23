@@ -1,6 +1,16 @@
 # Installation Guide
 ## Running the application with Docker
-### To Run with Docker:
+### Run with Docker by pulling the image from my docker hub (Recommended):
+***1.*** Install [Docker](https://www.docker.com/get-started)
+
+***2.*** Make sure Docker Desktop is running, you can check with:
+#### `docker info`
+
+***3.*** Just pull the image and create a docker container by running the following command:
+#### `docker run -p 3000:3000 --name black-white-tiles zhpeng/black-white-tiles`
+The `-p 3000:3000` does a port forwarding from the container to your host, which now you can goto http://localhost:3000 in your browser to play the game<br />
+
+### Run with Docker by Building the image:
 ***1.*** Install [Docker](https://www.docker.com/get-started)
 
 ***2.*** Make sure Docker Desktop is running, you can check with:

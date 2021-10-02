@@ -1,3 +1,8 @@
+# Playing The Game
+If you wish to skip the installation process and play the game:
+
+The game is now deployed with heroku at https://black-white-tiles.herokuapp.com/
+
 # Installation Guide
 ## Running the application with Docker
 ### Run with Docker by pulling the image from my docker hub (Recommended):

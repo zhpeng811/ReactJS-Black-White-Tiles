@@ -3,7 +3,25 @@ If you wish to skip the installation process and play the game:
 
 The game is now deployed with heroku at https://black-white-tiles.herokuapp.com/
 
+# Gamerule
+You are given two boards, one target board and one game board, the game board will be initally all white blocks, you can click the blocks on the game board but NOT on the target board
+
+***when you click on a block, the block itself and ALL adjacent blocks(top,left,bottom,right) will revert its color(WHITE -> BLACK or BLACK -> WHITE)***
+
+Your goal is to use the lowest amount of clicks to get the game board pattern to ***exactly*** match the target board pattern 
+
+## Want to challenge yourself? Try blind mode
+In blind mode, you have to memorize the target board pattern before starting the game, once you click the start game button, the target board pattern ***will be hidden***
+
+To make blind mode still playable, you have the option to ***show*** the target board pattern again. However, you cannot click on the game board when the target board pattern is shown, you must click ***hide*** again to resume the clicking.
+
+To challange yourself, try to use the show and hide options as few as possible
+
+Have fun!
+
 # Installation Guide
+The installation guide is for people who want to deploy the game locally or using docker
+
 ## Running the application with Docker
 ### Run with Docker by pulling the image from my docker hub (Recommended):
 ***1.*** Install [Docker](https://www.docker.com/get-started)
@@ -63,22 +81,6 @@ You can install at https://nodejs.org/en/download/ if you don't have NodeJS inst
 ***5.*** run the following to play the game:
 #### `npm start`
 A browser should automatically open with the game launch, or you can open it maually by typing http://localhost:3000 in your browser
-
-# Gamerule
-You are given two boards, one target board and one game board, the game board will be initally all white blocks, you can click the blocks on the game board but NOT on the target board
-
-***when you click on a block, the block itself and ALL adjacent blocks(top,left,bottom,right) will revert its color(WHITE -> BLACK or BLACK -> WHITE)***
-
-Your goal is to use the lowest amount of clicks to get the game board pattern to ***exactly*** match the target board pattern 
-
-## Want to challenge yourself? Try blind mode
-In blind mode, you have to memorize the target board pattern before starting the game, once you click the start game button, the target board pattern ***will be hidden***
-
-To make blind mode still playable, you have the option to ***show*** the target board pattern again. However, you cannot click on the game board when the target board pattern is shown, you must click ***hide*** again to resume the clicking.
-
-To challange yourself, try to use the show and hide options as few as possible
-
-Have fun!
 
 # Credits
 The start menu background image is found from: http://www.seekgif.com/free-image/black-and-white-wallpaper-best-hd-wallpaper-5750.html
